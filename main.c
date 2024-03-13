@@ -3,7 +3,7 @@
 
 int cell[30000] = {0};
 int* ip = cell;
-char tape[300];
+char tape[30000];
 int tape_end;
 
 char write_tape(){
@@ -18,6 +18,9 @@ char write_tape(){
             write_t('>');
             write_t(',');
             write_t('.');
+            write_t('#');
+            write_t('!');
+            write_t(':');
             write_t('[');
             write_t(']');
         }index++;
@@ -31,7 +34,7 @@ char write_tape(){
 
 void execute_tape(){
     int index = 0;
-    int nested = 0;
+    FILE* file = fopen("text.txt","w");
     printf("\nOUTPUT :: ");
 
     while(index < tape_end){
@@ -41,9 +44,10 @@ void execute_tape(){
             case '<': --ip;break;
             case '>': ++ip;break;
             case ',': *ip=getchar();break;
-            case '.':
-                putchar(*ip);
-                break;
+            case '.': putchar(*ip);break;
+            case '#': (*ip)+=48;break;
+            case '!': (*ip)+=10;break;
+            case ':': fputc(*ip,file);break;
             case '[':
                 if (*ip == 0) {
                     int temp_nested = 1;
@@ -72,7 +76,8 @@ void execute_tape(){
                 break;
         }
         index++;
-    }
+    }fclose(file);
+    
 }
 
 int main(int argc, char* argv[]){
