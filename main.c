@@ -34,17 +34,44 @@ void execute_tape(){
     int nested = 0;
     printf("\nOUTPUT :: ");
 
-    while(index != tape_end){
+    while(index < tape_end){
         switch(tape[index]){
             case '+': ++(*ip);break;
             case '-': --(*ip);break;
             case '<': --ip;break;
             case '>': ++ip;break;
             case ',': *ip=getchar();break;
-            case '.': putchar(*ip);break;
-            case '[': break;
-            case ']': break;
-        }index++;
+            case '.':
+                putchar(*ip);
+                break;
+            case '[':
+                if (*ip == 0) {
+                    int temp_nested = 1;
+                    while (temp_nested != 0) {
+                        index++;
+                        if (tape[index] == '[') {
+                            temp_nested++;
+                        } else if (tape[index] == ']') {
+                            temp_nested--;
+                        }
+                    }
+                }
+                break;
+            case ']':
+                if (*ip != 0) {
+                    int temp_nested = 1;
+                    while (temp_nested != 0) {
+                        index--;
+                        if (tape[index] == '[') {
+                            temp_nested--;
+                        } else if (tape[index] == ']') {
+                            temp_nested++;
+                        }
+                    }
+                }
+                break;
+        }
+        index++;
     }
 }
 
