@@ -34,6 +34,7 @@ char write_tape(){
 
 void execute_tape(){
     int index = 0;
+    int temp_nested = 0;
     FILE* file = fopen("text.txt","w");
     printf("\nOUTPUT :: ");
 
@@ -50,7 +51,6 @@ void execute_tape(){
             case ':': fputc(*ip,file);break;
             case '[':
                 if (*ip == 0) {
-                    int temp_nested = 1;
                     while (temp_nested != 0) {
                         index++;
                         if (tape[index] == '[') {
@@ -63,7 +63,7 @@ void execute_tape(){
                 break;
             case ']':
                 if (*ip != 0) {
-                    int temp_nested = 1;
+                    temp_nested++;
                     while (temp_nested != 0) {
                         index--;
                         if (tape[index] == '[') {
