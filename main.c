@@ -1,53 +1,59 @@
 #include <stdio.h>
+#define write_t(x) case x :tape[index]=ch;break
 
-int cell[300] = {0};
+int cell[30000] = {0};
+int* ip = cell;
+char tape[300];
+int tape_end;
 
-int main(int argc, char* argv[]){
-    if(argc < 2){
-        puts("[ERROR] file?");return -1;}
-    int* ip = cell;
-    
-    FILE* file = fopen(argv[1],"r");
-
+char write_tape(){
+    FILE* file = fopen("main.bf","r");
+    int index = 0;
     char ch;
-    int nested = 0;
-    char nestl[100];int np=0;
     while((ch = fgetc(file)) != EOF){
         switch(ch){
+            write_t('+');
+            write_t('-');
+            write_t('<');
+            write_t('>');
+            write_t(',');
+            write_t('.');
+            write_t('[');
+            write_t(']');
+        }index++;
+    }fclose(file);
+    tape_end = index;
+
+    printf("TAPE :: ");
+    for(index = 0; index < tape_end; index++)
+        printf("%c",tape[index]);
+}
+
+void execute_tape(){
+    int index = 0;
+    int nested = 0;
+    printf("\nOUTPUT :: ");
+
+    while(index != tape_end){
+        switch(tape[index]){
             case '+': ++(*ip);break;
             case '-': --(*ip);break;
             case '<': --ip;break;
             case '>': ++ip;break;
-            case ',': *ip = getchar();break;
+            case ',': *ip=getchar();break;
             case '.': putchar(*ip);break;
-            case '[':
-                nested++;
-                while(nested!=0){
-                    if(ch != ']')
-                        nested--;
-                    else{
-                        nestl[np] = ch;
-                        ch = fgetc(file);
-                    }
-                }
-                np = 0;
-                switch(nestl[np]){
-                    case '+': ++(*ip);break;
-                    case '-': --(*ip);break;
-                    case '<': --ip;break;
-                    case '>': ++ip;break;
-                    case ',': *ip = getchar();break;
-                    case '.': putchar(*ip);break;
-                    default:
-                        np++;
-                        break;
-                }
-                break;
-            case ']':
-                break;
-        }
+            case '[': break;
+            case ']': break;
+        }index++;
     }
-    fclose(file);
+}
+
+int main(int argc, char* argv[]){
+    //if(argc < 2){
+        //puts("[ERROR] file?");return -1;}
+
+    write_tape();
+    execute_tape();
 
     return 0;
 }
