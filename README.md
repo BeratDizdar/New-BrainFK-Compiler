@@ -8,8 +8,8 @@ cell value + | +
 cell value - | -
 cell + | >
 cell - | <
-input | >
-output | <
+input | ,
+output | .
 while(value!=0){ | [
 } | ]
 
