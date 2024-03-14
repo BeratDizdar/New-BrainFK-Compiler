@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define write_t(x) case x :tape[index]=ch;break
+#include <stdlib.h>
 
 void execute_tape(char* bf_code){
     int nested = 0;
@@ -11,10 +11,10 @@ void execute_tape(char* bf_code){
 
     while(command = *bf_code++)
         switch(command){
-        case '+': (*cp)++;break;
-        case '-': (*cp)--;break;
-        case '<': cp--;break;
-        case '>': cp++;break;
+        case '+': ++(*cp);break;
+        case '-': --(*cp);break;
+        case '<': --cp;break;
+        case '>': ++cp;break;
         case ',': *cp=getchar();break;
         case '.': putchar(*cp);break;
         case '#': (*cp)+=48;break;
@@ -45,30 +45,24 @@ void execute_tape(char* bf_code){
 
 char tape[30000];
 
-char* file_to_string(){
-    FILE* file = fopen("main.bf","r");
-    int tape_end;
+char* file_to_string() {
+    FILE* file = fopen("main.bf", "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        exit(1);
+    }
+
     int index = 0;
     char ch;
-    while((ch = fgetc(file)) != EOF){
-        switch(ch){
-            write_t('+');
-            write_t('-');
-            write_t('<');
-            write_t('>');
-            write_t(',');
-            write_t('.');
-            write_t('#');
-            write_t('!');
-            write_t('[');
-            write_t(']');
-        }index++;
-    }fclose(file);
-    tape_end = index;
+    while ((ch = fgetc(file)) != EOF) {
+        if (ch != ' ' && ch != '\n') {
+            tape[index++] = ch;
+        }
+    }
+    tape[index] = '\0';
+    fclose(file);
 
-    printf("TAPE :: ");
-    for(index = 0; index < tape_end; index++)
-        printf("%c",tape[index]);
+    printf("TAPE :: %s", tape);
     return tape;
 }
 
