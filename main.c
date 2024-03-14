@@ -1,13 +1,53 @@
 #include <stdio.h>
 #define write_t(x) case x :tape[index]=ch;break
 
-int cell[30000] = {0};
-int* ip = cell;
-char tape[30000];
-int tape_end;
+void execute_tape(char* bf_code){
+    int nested = 0;
+    char command;
+    char cell[30000] = {0};
+    char* cp = cell;
+    
+    printf("\nOUTPUT :: ");
 
-char write_tape(){
+    while(command = *bf_code++)
+        switch(command){
+        case '+': (*cp)++;break;
+        case '-': (*cp)--;break;
+        case '<': cp--;break;
+        case '>': cp++;break;
+        case ',': *cp=getchar();break;
+        case '.': putchar(*cp);break;
+        case '#': (*cp)+=48;break;
+        case '!': (*cp)+=10;break;
+        case '[':
+            if (!*cp) {
+                for (nested=1; nested; bf_code++)
+                    if (*bf_code == '[')
+                        nested++;
+                    else if (*bf_code == ']')
+                        nested--;
+            }
+            break;
+        case ']':
+            if (*cp) {
+                bf_code -= 2;
+                for (nested=1; nested; bf_code--)
+                    if(*bf_code == ']')
+                        nested++;
+                    else if (*bf_code == '[')
+                        nested--;
+                bf_code++;
+            }
+            break;
+        }
+    printf("\n");
+}
+
+char tape[30000];
+
+char* file_to_string(){
     FILE* file = fopen("main.bf","r");
+    int tape_end;
     int index = 0;
     char ch;
     while((ch = fgetc(file)) != EOF){
@@ -20,7 +60,6 @@ char write_tape(){
             write_t('.');
             write_t('#');
             write_t('!');
-            write_t(':');
             write_t('[');
             write_t(']');
         }index++;
@@ -30,62 +69,15 @@ char write_tape(){
     printf("TAPE :: ");
     for(index = 0; index < tape_end; index++)
         printf("%c",tape[index]);
-}
-
-void execute_tape(){
-    int index = 0;
-    int temp_nested = 0;
-    FILE* file = fopen("text.txt","w");
-    printf("\nOUTPUT :: ");
-
-    while(index < tape_end){
-        switch(tape[index]){
-            case '+': ++(*ip);break;
-            case '-': --(*ip);break;
-            case '<': --ip;break;
-            case '>': ++ip;break;
-            case ',': *ip=getchar();break;
-            case '.': putchar(*ip);break;
-            case '#': (*ip)+=48;break;
-            case '!': (*ip)+=10;break;
-            case ':': fputc(*ip,file);break;
-            case '[':
-                if (*ip == 0) {
-                    while (temp_nested != 0) {
-                        index++;
-                        if (tape[index] == '[') {
-                            temp_nested++;
-                        } else if (tape[index] == ']') {
-                            temp_nested--;
-                        }
-                    }
-                }
-                break;
-            case ']':
-                if (*ip != 0) {
-                    temp_nested++;
-                    while (temp_nested != 0) {
-                        index--;
-                        if (tape[index] == '[') {
-                            temp_nested--;
-                        } else if (tape[index] == ']') {
-                            temp_nested++;
-                        }
-                    }
-                }
-                break;
-        }
-        index++;
-    }fclose(file);
-    
+    return tape;
 }
 
 int main(int argc, char* argv[]){
     //if(argc < 2){
         //puts("[ERROR] file?");return -1;}
 
-    write_tape();
-    execute_tape();
+    char* bf_code = file_to_string();
+    execute_tape(bf_code);
 
     return 0;
 }
