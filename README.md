@@ -9,7 +9,7 @@ cell value - | -
 cell + | >
 cell - | <
 input | ,
-output | .
+char out | .
 while(value!=0){ | [
 } | ]
 
@@ -17,6 +17,6 @@ while(value!=0){ | [
 
 desc. | symbol
 ---|---
-output as num<br>(cell value + 48) | #
-Line Feed | !
-write to file | :
+decimal out | #
+hexadecimal out | x
+print Line Feed | !
