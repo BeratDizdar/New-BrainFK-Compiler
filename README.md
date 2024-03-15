@@ -20,3 +20,6 @@ desc. | symbol
 decimal out | #
 hexadecimal out | x
 print Line Feed | !
+
+# Text to BrainFK+[+] tool
+- [Tool src](str_bf.py)
